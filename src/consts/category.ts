@@ -2,289 +2,335 @@ import type { PresetCategory } from '@/core/category.ts';
 
 export const DEFAULT_EXPENSE_CATEGORIES: PresetCategory[] = [
     {
-        name: 'Food & Drink',
-        categoryIconId: '1',
-        color: 'ff6b22',
+        name: 'Salary',
+        categoryIconId: '2000',
+        color: '00796b',
         subCategories: [
             {
-                name: 'Food',
-                categoryIconId: '2',
-                color: 'ff6b22'
-            },
-            {
-                name: 'Drink',
-                categoryIconId: '30',
-                color: 'ff6b22'
-            },
-            {
-                name: 'Fruit & Snack',
-                categoryIconId: '70',
-                color: 'ff6b22'
+                name: 'Salary',
+                categoryIconId: '2010',
+                color: '00796b'
             }
         ]
     },
     {
-        name: 'Clothing & Appearance',
-        categoryIconId: '100',
+        name: 'Office Rent',
+        categoryIconId: '290',
+        color: '3f51b5',
+        subCategories: [
+            {
+                name: 'Rent',
+                categoryIconId: '290',
+                color: '3f51b5'
+            }
+        ]
+    },
+    {
+        name: 'Utilities',
+        categoryIconId: '271',
+        color: 'f57c00',
+        subCategories: [
+            {
+                name: 'Electricity',
+                categoryIconId: '271',
+                color: 'f57c00'
+            },
+            {
+                name: 'Water',
+                categoryIconId: '270',
+                color: 'f57c00'
+            },
+            {
+                name: 'Internet',
+                categoryIconId: '440',
+                color: 'f57c00'
+            },
+            {
+                name: 'Phone',
+                categoryIconId: '400',
+                color: 'f57c00'
+            }
+        ]
+    },
+    {
+        name: 'Office Supplies',
+        categoryIconId: '1000',
+        color: '795548',
+        subCategories: [
+            {
+                name: 'Stationery',
+                categoryIconId: '1000',
+                color: '795548'
+            },
+            {
+                name: 'Printing',
+                categoryIconId: '241',
+                color: '795548'
+            }
+        ]
+    },
+    {
+        name: 'Travel',
+        categoryIconId: '390',
+        color: '0288d1',
+        subCategories: [
+            {
+                name: 'Flights',
+                categoryIconId: '390',
+                color: '0288d1'
+            },
+            {
+                name: 'Hotel',
+                categoryIconId: '597',
+                color: '0288d1'
+            },
+            {
+                name: 'Local Transport',
+                categoryIconId: '320',
+                color: '0288d1'
+            },
+            {
+                name: 'Fuel',
+                categoryIconId: '341',
+                color: '0288d1'
+            }
+        ]
+    },
+    {
+        name: 'Food & Meals',
+        categoryIconId: '1',
+        color: 'ff5722',
+        subCategories: [
+            {
+                name: 'Team Lunch',
+                categoryIconId: '10',
+                color: 'ff5722'
+            },
+            {
+                name: 'Client Meals',
+                categoryIconId: '2',
+                color: 'ff5722'
+            },
+            {
+                name: 'Tea & Coffee',
+                categoryIconId: '196',
+                color: 'ff5722'
+            }
+        ]
+    },
+    {
+        name: 'Software & Subscriptions',
+        categoryIconId: '1021',
         color: '673ab7',
         subCategories: [
             {
-                name: 'Clothing',
-                categoryIconId: '110',
+                name: 'Cloud',
+                categoryIconId: '1022',
                 color: '673ab7'
             },
             {
-                name: 'Jewelry',
-                categoryIconId: '170',
+                name: 'Licenses',
+                categoryIconId: '1021',
                 color: '673ab7'
             },
             {
-                name: 'Cosmetic',
-                categoryIconId: '180',
-                color: '673ab7'
-            },
-            {
-                name: 'Hair Cuts & Salon',
-                categoryIconId: '190',
+                name: 'Domains',
+                categoryIconId: '1027',
                 color: '673ab7'
             }
         ]
     },
     {
-        name: 'Housing & Houseware',
-        categoryIconId: '200',
-        color: '000000',
+        name: 'Equipment & Hardware',
+        categoryIconId: '431',
+        color: '607d8b',
         subCategories: [
             {
-                name: 'Houseware',
+                name: 'Laptops',
+                categoryIconId: '431',
+                color: '607d8b'
+            },
+            {
+                name: 'Furniture',
                 categoryIconId: '210',
-                color: '000000'
+                color: '607d8b'
             },
             {
-                name: 'Electronics',
-                categoryIconId: '230',
-                color: '000000'
-            },
-            {
-                name: 'Repairs & Maintenance',
+                name: 'Repairs',
                 categoryIconId: '250',
-                color: '000000'
-            },
-            {
-                name: 'Housekeeping Services',
-                categoryIconId: '260',
-                color: '000000'
-            },
-            {
-                name: 'Utilities Expense',
-                categoryIconId: '270',
-                color: '000000'
-            },
-            {
-                name: 'Rent & Mortgage',
-                categoryIconId: '290',
-                color: '000000'
+                color: '607d8b'
             }
         ]
     },
     {
-        name: 'Transportation',
-        categoryIconId: '300',
-        color: '009688',
+        name: 'Maintenance & Repairs',
+        categoryIconId: '250',
+        color: '546e7a',
         subCategories: [
             {
-                name: 'Public Transit',
-                categoryIconId: '310',
-                color: '009688'
-            },
-            {
-                name: 'Taxi & Car Rental',
-                categoryIconId: '320',
-                color: '009688'
-            },
-            {
-                name: 'Personal Car Expense',
-                categoryIconId: '330',
-                color: '009688'
-            },
-            {
-                name: 'Train Tickets',
-                categoryIconId: '370',
-                color: '009688'
-            },
-            {
-                name: 'Airline Tickets',
-                categoryIconId: '390',
-                color: '009688'
-            }
-        ]
-    },
-    {
-        name: 'Communication',
-        categoryIconId: '400',
-        color: '2196f3',
-        subCategories: [
-            {
-                name: 'Telephone Bill',
-                categoryIconId: '420',
-                color: '2196f3'
-            },
-            {
-                name: 'Internet Bill',
-                categoryIconId: '430',
-                color: '2196f3'
-            },
-            {
-                name: 'Express Fee',
-                categoryIconId: '480',
-                color: '2196f3'
-            }
-        ]
-    },
-    {
-        name: 'Entertainment',
-        categoryIconId: '500',
-        color: 'ff2d55',
-        subCategories: [
-            {
-                name: 'Sports & Fitness',
-                categoryIconId: '510',
-                color: 'ff2d55'
-            },
-            {
-                name: 'Party Expense',
-                categoryIconId: '540',
-                color: 'ff2d55'
-            },
-            {
-                name: 'Movies & Shows',
-                categoryIconId: '550',
-                color: 'ff2d55'
-            },
-            {
-                name: 'Toys & Games',
-                categoryIconId: '560',
-                color: 'ff2d55'
-            },
-            {
-                name: 'Subscriptions',
-                categoryIconId: '570',
-                color: 'ff2d55'
-            },
-            {
-                name: 'Pet Expense',
-                categoryIconId: '580',
-                color: 'ff2d55'
-            },
-            {
-                name: 'Travelling',
-                categoryIconId: '590',
-                color: 'ff2d55'
-            }
-        ]
-    },
-    {
-        name: 'Education & Studying',
-        categoryIconId: '600',
-        color: 'cddc39',
-        subCategories: [
-            {
-                name: 'Books & Newspaper & Magazines',
-                categoryIconId: '610',
-                color: 'cddc39'
-            },
-            {
-                name: 'Training Courses',
-                categoryIconId: '660',
-                color: 'cddc39'
-            },
-            {
-                name: 'Certification & Examination',
-                categoryIconId: '680',
-                color: 'cddc39'
-            }
-        ]
-    },
-    {
-        name: 'Gifts & Donations',
-        categoryIconId: '700',
-        color: '4cd964',
-        subCategories: [
-            {
-                name: 'Gifts',
-                categoryIconId: '710',
-                color: '4cd964'
-            },
-            {
-                name: 'Donations',
-                categoryIconId: '780',
-                color: '4cd964'
-            }
-        ]
-    },
-    {
-        name: 'Medical & Healthcare',
-        categoryIconId: '800',
-        color: 'ff3b30',
-        subCategories: [
-            {
-                name: 'Diagnosis & Treatment',
-                categoryIconId: '840',
-                color: 'ff3b30'
-            },
-            {
-                name: 'Medications',
-                categoryIconId: '860',
-                color: 'ff3b30'
-            },
-            {
-                name: 'Medical Devices',
-                categoryIconId: '890',
-                color: 'ff3b30'
-            }
-        ]
-    },
-    {
-        name: 'Finance & Insurance',
-        categoryIconId: '900',
-        color: 'ff9500',
-        subCategories: [
-            {
-                name: 'Tax Expense',
-                categoryIconId: '910',
-                color: 'ff9500'
-            },
-            {
-                name: 'Service Charge',
-                categoryIconId: '930',
-                color: 'ff9500'
-            },
-            {
-                name: 'Insurance Expense',
-                categoryIconId: '950',
-                color: 'ff9500'
-            },
-            {
-                name: 'Interest Expense',
-                categoryIconId: '970',
-                color: 'ff9500'
-            },
-            {
-                name: 'Compensation & Fine',
-                categoryIconId: '990',
-                color: 'ff9500'
+                name: 'Facility Maintenance',
+                categoryIconId: '251',
+                color: '546e7a'
             }
         ]
     },
     {
         name: 'Miscellaneous',
-        categoryIconId: '1000',
-        color: '8e8e93',
+        categoryIconId: '5000',
+        color: '9e9e9e',
         subCategories: [
             {
-                name: 'Other Expense',
+                name: 'Miscellaneous',
                 categoryIconId: '1010',
-                color: '8e8e93'
+                color: '9e9e9e'
+            }
+        ]
+    },
+    {
+        name: 'Marketing & Advertising',
+        categoryIconId: '571',
+        color: 'e91e63',
+        subCategories: [
+            {
+                name: 'Marketing & Advertising',
+                categoryIconId: '571',
+                color: 'e91e63'
+            }
+        ]
+    },
+    {
+        name: 'Professional Fees',
+        categoryIconId: '990',
+        color: '455a64',
+        subCategories: [
+            {
+                name: 'CA',
+                categoryIconId: '950',
+                color: '455a64'
+            },
+            {
+                name: 'Legal',
+                categoryIconId: '990',
+                color: '455a64'
+            },
+            {
+                name: 'Consultants',
+                categoryIconId: '5030',
+                color: '455a64'
+            }
+        ]
+    },
+    {
+        name: 'Taxes & Compliance',
+        categoryIconId: '950',
+        color: 'd32f2f',
+        subCategories: [
+            {
+                name: 'GST',
+                categoryIconId: '950',
+                color: 'd32f2f'
+            },
+            {
+                name: 'TDS',
+                categoryIconId: '960',
+                color: 'd32f2f'
+            },
+            {
+                name: 'License Fees',
+                categoryIconId: '540',
+                color: 'd32f2f'
+            }
+        ]
+    },
+    {
+        name: 'Insurance',
+        categoryIconId: '560',
+        color: '0097a7',
+        subCategories: [
+            {
+                name: 'Insurance',
+                categoryIconId: '560',
+                color: '0097a7'
+            }
+        ]
+    },
+    {
+        name: 'Training & Education',
+        categoryIconId: '640',
+        color: '8bc34a',
+        subCategories: [
+            {
+                name: 'Training & Education',
+                categoryIconId: '660',
+                color: '8bc34a'
+            }
+        ]
+    },
+    {
+        name: 'Recruitment',
+        categoryIconId: '570',
+        color: '00acc1',
+        subCategories: [
+            {
+                name: 'Job Portal Fees',
+                categoryIconId: '570',
+                color: '00acc1'
+            },
+            {
+                name: 'Agency Charges',
+                categoryIconId: '901',
+                color: '00acc1'
+            }
+        ]
+    },
+    {
+        name: 'Bank Charges & Interest',
+        categoryIconId: '900',
+        color: 'ff8f00',
+        subCategories: [
+            {
+                name: 'Bank Charges',
+                categoryIconId: '930',
+                color: 'ff8f00'
+            },
+            {
+                name: 'Interest',
+                categoryIconId: '970',
+                color: 'ff8f00'
+            }
+        ]
+    },
+    {
+        name: 'Employee Benefits',
+        categoryIconId: '710',
+        color: '4caf50',
+        subCategories: [
+            {
+                name: 'Bonus',
+                categoryIconId: '2020',
+                color: '4caf50'
+            },
+            {
+                name: 'PF Contribution',
+                categoryIconId: '910',
+                color: '4caf50'
+            },
+            {
+                name: 'Medical',
+                categoryIconId: '633',
+                color: '4caf50'
+            }
+        ]
+    },
+    {
+        name: 'Events & Celebrations',
+        categoryIconId: '700',
+        color: 'ab47bc',
+        subCategories: [
+            {
+                name: 'Events & Celebrations',
+                categoryIconId: '700',
+                color: 'ab47bc'
             }
         ]
     }
@@ -419,7 +465,6 @@ export const DEFAULT_TRANSFER_CATEGORIES: PresetCategory[] = [
             }
         ]
     },
-
     {
         name: 'Miscellaneous',
         categoryIconId: '1000',
