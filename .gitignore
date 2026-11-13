@@ -165,3 +165,30 @@ ezbookkeeping
 /data/
 /storage/
 /log/
+
+# Database files (live data, never commit)
+*.db
+*.db-shm
+*.db-wal
+
+# Built frontend served by backend (auto-generated from dist/)
+/public/css/
+/public/js/
+/public/fonts/
+/public/img/
+/public/desktop.html
+/public/index.html
+/public/mobile.html
+/public/manifest.json
+/public/sw.js
+/public/touchicon.png
+/public/favicon.ico
+/public/favicon.png
+/public/robots.txt
+
+# Graphify knowledge graph (auto-generated, not source code)
+/graphify-out/
+
+# Deploy artifacts
+*.zip
+deploy.zip
