@@ -611,7 +611,9 @@
                                         </div>
                                     </td>
                                     <td class="transaction-table-column-tags" v-if="showTagInTransactionListPage">
-                                        <v-chip class="transaction-tag" size="small" :prepend-icon="mdiPound"
+                                        <v-chip class="transaction-tag" size="small"
+                                                :prepend-icon="getTagIcon(allTransactionTags[tagId]?.name)"
+                                                :color="getTagColor(allTransactionTags[tagId]?.name)"
                                                 :text="allTransactionTags[tagId]?.name"
                                                 :key="tagId"
                                                 v-for="tagId in transaction.tagIds"/>
@@ -829,6 +831,10 @@ import {
     mdiArrowLeft,
     mdiArrowRight,
     mdiPound,
+    mdiDomain,
+    mdiAccount,
+    mdiClockOutline,
+    mdiCheckCircleOutline,
     mdiImageOutline,
     mdiMagicStaff,
     mdiTablePlus,
@@ -933,6 +939,27 @@ const userStore = useUserStore();
 const accountsStore = useAccountsStore();
 const transactionCategoriesStore = useTransactionCategoriesStore();
 const transactionTagsStore = useTransactionTagsStore();
+
+function getTagColor(tagName?: string): string | undefined {
+    if (!tagName) return undefined;
+    const lower = tagName.toLowerCase();
+    if (lower === 'reimbursement:pending') return 'warning';
+    if (lower === 'reimbursement:reimbursed') return 'success';
+    if (lower === 'paidby:employee') return 'deep-orange';
+    if (lower === 'paidby:company') return 'info';
+    return undefined;
+}
+
+function getTagIcon(tagName?: string): string {
+    if (!tagName) return mdiPound;
+    const lower = tagName.toLowerCase();
+    if (lower === 'reimbursement:pending') return mdiClockOutline;
+    if (lower === 'reimbursement:reimbursed') return mdiCheckCircleOutline;
+    if (lower.startsWith('employee:')) return mdiAccount;
+    if (lower.startsWith('paidby:')) return mdiDomain;
+    return mdiPound;
+}
+
 const transactionsStore = useTransactionsStore();
 const transactionTemplatesStore = useTransactionTemplatesStore();
 const desktopPageStore = useDesktopPageStore();

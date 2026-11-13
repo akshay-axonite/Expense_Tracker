@@ -168,6 +168,60 @@
                                         </template>
                                     </v-tooltip>
                                 </v-col>
+                                <v-col cols="12" md="12" v-if="transaction.type === TransactionType.Expense">
+                                    <v-card variant="outlined" class="pa-3 mb-1">
+                                        <div class="text-subtitle-2 mb-2 font-weight-medium d-flex align-center">
+                                            <v-icon start size="18" :icon="mdiDomain"></v-icon>
+                                            {{ tt('Company Expense Tracking') }}
+                                        </div>
+                                        <v-row dense>
+                                            <v-col cols="12" :md="paidBy === 'Employee' || isSalaryCategory ? 6 : 12">
+                                                <v-select
+                                                    :label="tt('Paid By')"
+                                                    :items="[
+                                                        { title: tt('Company'), value: 'Company' },
+                                                        { title: tt('Employee (Out of pocket)'), value: 'Employee' }
+                                                    ]"
+                                                    v-model="paidBy"
+                                                    :disabled="loading || submitting || recognizing || isSalaryCategory"
+                                                    :readonly="mode === TransactionEditPageMode.View"
+                                                    density="comfortable"
+                                                    variant="outlined"
+                                                />
+                                            </v-col>
+                                            <v-col cols="12" md="6" v-if="paidBy === 'Employee' || isSalaryCategory">
+                                                <v-combobox
+                                                    :label="isSalaryCategory ? tt('Employee Name * (Required for Salary)') : tt('Employee Name * (Required)')"
+                                                    :placeholder="tt('Select or enter employee name')"
+                                                    :items="knownEmployees"
+                                                    v-model="employeeName"
+                                                    :error="employeeNameError"
+                                                    :error-messages="employeeNameErrorMessage"
+                                                    :disabled="loading || submitting || recognizing"
+                                                    :readonly="mode === TransactionEditPageMode.View"
+                                                    density="comfortable"
+                                                    variant="outlined"
+                                                    clearable
+                                                    @update:model-value="onEmployeeNameChange"
+                                                />
+                                            </v-col>
+                                            <v-col cols="12" md="12" v-if="paidBy === 'Employee'">
+                                                <v-select
+                                                    :label="tt('Reimbursement Status')"
+                                                    :items="[
+                                                        { title: tt('Pending Reimbursement'), value: 'Pending' },
+                                                        { title: tt('Reimbursed'), value: 'Reimbursed' }
+                                                    ]"
+                                                    v-model="reimbursementStatus"
+                                                    :disabled="loading || submitting || recognizing"
+                                                    :readonly="mode === TransactionEditPageMode.View"
+                                                    density="comfortable"
+                                                    variant="outlined"
+                                                />
+                                            </v-col>
+                                        </v-row>
+                                    </v-card>
+                                </v-col>
                                 <v-col cols="12" md="12" v-if="transaction.type === TransactionType.Income">
                                     <v-tooltip :disabled="hasVisibleIncomeCategories" :text="hasVisibleIncomeCategories ? '' : tt('No secondary income categories are available')">
                                         <template v-slot:activator="{ props }">
@@ -540,6 +594,7 @@ import { SUPPORTED_IMAGE_EXTENSIONS } from '@/consts/file.ts';
 import { TransactionTemplate } from '@/models/transaction_template.ts';
 import type { TransactionPictureInfoBasicResponse } from '@/models/transaction_picture_info.ts';
 import { Transaction } from '@/models/transaction.ts';
+import { TransactionTag } from '@/models/transaction_tag.ts';
 
 import { isDefined, isEquals } from '@/lib/common.ts';
 import {
@@ -575,7 +630,8 @@ import {
     mdiMenuDown,
     mdiImagePlusOutline,
     mdiTrashCanOutline,
-    mdiFullscreen
+    mdiFullscreen,
+    mdiDomain
 } from '@mdi/js';
 
 export interface TransactionEditOptions extends SetTransactionOptions {
@@ -686,6 +742,146 @@ const removingPictureId = ref<string>('');
 const pastedText = ref<string>('');
 
 const initOptions = ref<TransactionEditOptions | undefined>(undefined);
+
+// Corporate Expense Tracking State
+const paidBy = ref<'Company' | 'Employee'>('Company');
+const employeeName = ref<string>('');
+const reimbursementStatus = ref<'Pending' | 'Reimbursed'>('Pending');
+const employeeNameError = ref<boolean>(false);
+const employeeNameErrorMessage = ref<string>('');
+
+const isSalaryCategory = computed<boolean>(() => {
+    if (transaction.value.type !== TransactionType.Expense) {
+        return false;
+    }
+    const catId = transaction.value.expenseCategoryId;
+    if (!catId) {
+        return false;
+    }
+    const primary = getTransactionPrimaryCategoryName(catId, allCategories.value[CategoryType.Expense]) || '';
+    const secondary = getTransactionSecondaryCategoryName(catId, allCategories.value[CategoryType.Expense]) || '';
+    return primary.toLowerCase() === 'salary' || secondary.toLowerCase() === 'salary';
+});
+
+const knownEmployees = computed<string[]>(() => {
+    const employees = new Set<string>();
+    for (const tag of Object.values(transactionTagsStore.allTransactionTagsMap)) {
+        if (tag.name.toLowerCase().startsWith('employee:')) {
+            const name = tag.name.substring('employee:'.length).trim();
+            if (name) {
+                employees.add(name);
+            }
+        }
+    }
+    return Array.from(employees).sort();
+});
+
+watch(isSalaryCategory, (newVal) => {
+    if (newVal) {
+        paidBy.value = 'Company';
+    }
+});
+
+watch(showState, (newVal) => {
+    if (newVal) {
+        initCorporateExpenseFields();
+    }
+});
+
+function onEmployeeNameChange(): void {
+    employeeNameError.value = false;
+    employeeNameErrorMessage.value = '';
+}
+
+function initCorporateExpenseFields(): void {
+    let currentPaidBy: 'Company' | 'Employee' = 'Company';
+    let currentEmployeeName = '';
+    let currentReimbursementStatus: 'Pending' | 'Reimbursed' = 'Pending';
+
+    if (transaction.value && transaction.value.tagIds && transaction.value.tagIds.length) {
+        for (const tagId of transaction.value.tagIds) {
+            const tag = transactionTagsStore.allTransactionTagsMap[tagId];
+            if (!tag) continue;
+            const tagName = tag.name.trim();
+            const lower = tagName.toLowerCase();
+            if (lower === 'paidby:employee') {
+                currentPaidBy = 'Employee';
+            } else if (lower === 'paidby:company') {
+                currentPaidBy = 'Company';
+            } else if (lower.startsWith('employee:')) {
+                currentEmployeeName = tagName.substring('employee:'.length).trim();
+            } else if (lower === 'reimbursement:pending') {
+                currentReimbursementStatus = 'Pending';
+            } else if (lower === 'reimbursement:reimbursed') {
+                currentReimbursementStatus = 'Reimbursed';
+            }
+        }
+    }
+
+    paidBy.value = currentPaidBy;
+    employeeName.value = currentEmployeeName;
+    reimbursementStatus.value = currentReimbursementStatus;
+    employeeNameError.value = false;
+    employeeNameErrorMessage.value = '';
+}
+
+async function ensureTagId(tagName: string): Promise<string | null> {
+    const trimmed = tagName.trim();
+    if (!trimmed) return null;
+    const existing = Object.values(transactionTagsStore.allTransactionTagsMap).find(
+        (t: TransactionTag) => t.name.toLowerCase() === trimmed.toLowerCase()
+    );
+    if (existing && existing.id) {
+        return existing.id;
+    }
+    try {
+        const newTag = await transactionTagsStore.saveTag({
+            tag: TransactionTag.createNewTag(trimmed)
+        });
+        return newTag.id;
+    } catch (e) {
+        logger.error(`failed to create tag ${trimmed}`, e);
+        return null;
+    }
+}
+
+async function syncCorporateTags(): Promise<void> {
+    if (transaction.value.type !== TransactionType.Expense) {
+        return;
+    }
+
+    const tagIdsToKeep = (transaction.value.tagIds || []).filter(tagId => {
+        const tag = transactionTagsStore.allTransactionTagsMap[tagId];
+        if (!tag) return true;
+        const lower = tag.name.toLowerCase();
+        return !lower.startsWith('paidby:') && !lower.startsWith('employee:') && !lower.startsWith('reimbursement:');
+    });
+
+    const paidByTagName = paidBy.value === 'Employee' ? 'PaidBy:Employee' : 'PaidBy:Company';
+    const paidById = await ensureTagId(paidByTagName);
+    if (paidById && !tagIdsToKeep.includes(paidById)) {
+        tagIdsToKeep.push(paidById);
+    }
+
+    if (employeeName.value && employeeName.value.trim() && (isSalaryCategory.value || paidBy.value === 'Employee')) {
+        const empTagName = `Employee:${employeeName.value.trim()}`;
+        const empTagId = await ensureTagId(empTagName);
+        if (empTagId && !tagIdsToKeep.includes(empTagId)) {
+            tagIdsToKeep.push(empTagId);
+        }
+    }
+
+    if (paidBy.value === 'Employee') {
+        const reimbTagName = `Reimbursement:${reimbursementStatus.value}`;
+        const reimbTagId = await ensureTagId(reimbTagName);
+        if (reimbTagId && !tagIdsToKeep.includes(reimbTagId)) {
+            tagIdsToKeep.push(reimbTagId);
+        }
+    }
+
+    transaction.value.tagIds = tagIdsToKeep;
+}
+
 
 const sourceAmountColor = computed<string | undefined>(() => {
     if (transaction.value.type === TransactionType.Expense) {
@@ -890,7 +1086,7 @@ function open(options: TransactionEditOptions): Promise<TransactionEditResponse 
     });
 }
 
-function save(afterAction: AfterSaveAction): void {
+async function save(afterAction: AfterSaveAction): Promise<void> {
     const problemMessage = inputEmptyProblemMessage.value;
 
     if (problemMessage) {
@@ -898,9 +1094,29 @@ function save(afterAction: AfterSaveAction): void {
         return;
     }
 
+    if (transaction.value.type === TransactionType.Expense) {
+        if (isSalaryCategory.value && !employeeName.value?.trim()) {
+            employeeNameError.value = true;
+            employeeNameErrorMessage.value = tt('Employee Name is required for Salary');
+            snackbar.value?.showMessage(employeeNameErrorMessage.value);
+            return;
+        }
+
+        if (paidBy.value === 'Employee' && !employeeName.value?.trim()) {
+            employeeNameError.value = true;
+            employeeNameErrorMessage.value = tt('Employee Name is required when paid by Employee');
+            snackbar.value?.showMessage(employeeNameErrorMessage.value);
+            return;
+        }
+    }
+
     if (props.type === TransactionEditPageType.Transaction && (mode.value === TransactionEditPageMode.Add || mode.value === TransactionEditPageMode.Edit)) {
-        const doSubmit = function () {
+        const doSubmit = async function () {
             submitting.value = true;
+
+            if (transaction.value.type === TransactionType.Expense) {
+                await syncCorporateTags();
+            }
 
             transactionsStore.saveTransaction({
                 transaction: transaction.value as Transaction,
@@ -918,6 +1134,7 @@ function save(afterAction: AfterSaveAction): void {
                 if (mode.value === TransactionEditPageMode.Add && (afterAction === AfterSaveAction.StayWithNewTransaction || afterAction === AfterSaveAction.StayWithCurrentTransaction)) {
                     snackbar.value?.showMessage('You have added a new transaction');
                     updateTransactionModelByAfterSaveAction(afterAction, initOptions.value);
+                    initCorporateExpenseFields();
                     clientSessionId.value = generateRandomUUID();
                 } else {
                     if (resolveFunc) {
