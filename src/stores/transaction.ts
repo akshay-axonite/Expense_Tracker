@@ -47,6 +47,7 @@ import type {
 } from '@/models/large_language_model.ts';
 
 import {
+    getCurrentToken,
     getUserTransactionDraft,
     updateUserTransactionDraft,
     clearUserTransactionDraft
@@ -1852,7 +1853,16 @@ export const useTransactionsStore = defineStore('transactions', () => {
             return undefined;
         }
 
-        return pictureInfo.originalUrl;
+        let url = pictureInfo.originalUrl;
+        if (!url.includes('token=')) {
+            const token = getCurrentToken();
+            if (token) {
+                const separator = url.includes('?') ? '&' : '?';
+                url += separator + 'token=' + encodeURIComponent(token);
+            }
+        }
+
+        return url;
     }
 
     function collapseMonthInTransactionList({ monthList, collapse }: { monthList: TransactionMonthList, collapse: boolean }): void {
